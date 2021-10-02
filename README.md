@@ -1,4 +1,5 @@
 # vue-3-app
+[![Netlify Status](https://api.netlify.com/api/v1/badges/cb2a71bd-1bc8-48d5-b560-272d85a5c2fe/deploy-status)](https://app.netlify.com/sites/vue-3-app/deploys)
 
 ## Project setup
 ```
