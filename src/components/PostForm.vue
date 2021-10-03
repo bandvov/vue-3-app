@@ -9,8 +9,16 @@
 <script>
     export default {
         props:{
-            addPost: null,
-            id: null,
+            addPost: {
+                type: Function,
+                required:true,
+                default: null
+            },
+            id: {
+                type: Number,
+                required: true,
+                default: null,
+            },
         },
         data:() =>({
             title:"",

@@ -13,7 +13,11 @@
 <script>
 export default {
   props:{
-      posts:[]
+      posts:{
+          type: Array,
+          required: true,
+          default: []
+      }
   }
 }
 </script>
