@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div  class="post">
       <div>Post: {{post.id}}</div>
       <div><strong>title: </strong>{{post.title}}</div>
       <div><strong>Text: </strong>{{post.text}}.</div>
@@ -21,6 +21,10 @@
     }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+  .post {
+    border: 1px solid teal;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
 </style>

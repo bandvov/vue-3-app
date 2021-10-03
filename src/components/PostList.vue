@@ -1,11 +1,9 @@
 <template>
-    <div 
-      class="post"
-      v-for="post in posts"
-      :key="post"
-    >
-     <post-item :post="post" />
-    </div>
+    <post-item
+        v-for="post in posts"
+        :key="post"
+        :post="post"
+    />
 </template>
 
 <script>
