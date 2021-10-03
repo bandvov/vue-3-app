@@ -1,27 +1,23 @@
 <template>
   <div class="app">
-    <form @submit.prevent class="form">
-      <input class="input" type="text" name="title" v-model="title" />
-      <input class="input" type="text" name="text" v-model="text" />
-      <button class="btn" type="submit" @click="createPost">Add Post</button>
-    </form>
-    <div 
-      class="post"
-      v-for="post in posts"
-      :key="post"
-    >
-      <div>Post: {{post.id}}</div>
-      <div><strong>title: </strong>{{post.title}}</div>
-      <div><strong>Text: </strong>{{post.text}}.</div>
-    </div>
+    <post-form :addPost="addPost" :id="this.posts.length" />
+    <post-list :posts="posts" />
   </div>
   <router-view/>
 </template>
+
 <script>
+
+import PostList from './components/PostList.vue';
+import PostForm from './components/PostForm.vue';
+
 export default {
+  components:{
+    PostList,
+    PostForm,
+  },
   data:() =>({
-    title:"",
-    text:"",
+
   posts: [
     {
       id:1,
@@ -46,15 +42,8 @@ export default {
   ] 
   }), 
   methods:{
-    createPost(){
-      const post = {
-        id: this.posts.length + 1, 
-        title: this.title, 
-        text: this.text
-      }
+    addPost(post){
       this.posts.push(post);
-      this.title = "";
-      this.text = "";
     }
   }
 }
@@ -65,33 +54,9 @@ export default {
     margin: 0;
     box-sizing: content-box;
   }
-  .post {
-    border: 1px solid teal;
-    padding: 1rem;
-    margin-top: 1rem;
-  }
+
   .app {
     margin: 1rem;
   }
-  .form {
-    display: flex;
-    flex-direction: column;
-  }
-  .input {
-    padding: .5rem;
-    margin-bottom: 1rem;
-  }
-  .btn {
-    align-self: flex-end;
-    background-color: transparent;
-    border: 1px solid teal;
-    padding: 0.5rem;
-    border-radius: .2rem;
-  }
-  .btn:hover {
-    background-color: teal;
-    color: white;
-    transition: .1s ease-in-out;
-    cursor: pointer;
-  }
+ 
 </style>
