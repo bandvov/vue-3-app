@@ -41,11 +41,12 @@ export default {
     },
   ] 
   }), 
+  
   methods:{
     addPost(post){
       this.posts.push(post);
     }
-  }
+  },
 }
 </script>
 <style>

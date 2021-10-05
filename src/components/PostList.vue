@@ -1,14 +1,17 @@
-<template>
-    <post-item
-        v-for="post in posts"
-        :key="post"
-        :post="post"
-    />
+<template>    
+        <h2>List of posts</h2>
+        <post-item        
+            v-for="post in posts"
+            :key="post"
+            :post="post"
+        />
+
 </template>
 
 <script>
-import PostItem from './PostItem.vue'
-export default {
+    import PostItem from './PostItem.vue'
+
+    export default {
   components: { PostItem },
   props:{
       posts:{
@@ -20,10 +23,5 @@ export default {
 }
 </script>
 
-<style scoped>
-  .post {
-    border: 1px solid teal;
-    padding: 1rem;
-    margin-top: 1rem;
-  }
+<style>
 </style>

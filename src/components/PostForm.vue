@@ -34,6 +34,7 @@
       this.addPost(post);
       this.title = "";
       this.text = "";
+      
             }
         }
     }
