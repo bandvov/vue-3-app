@@ -6,15 +6,16 @@
         <div><strong>Text: </strong>{{post.text}}.</div>
       </div>
       <div class="btns">
-       <my-button @click="deleteHandler">Delete</my-button>
+        <my-button 
+          style="border: 1px solid red" 
+          @click="deleteHandler">Delete
+        </my-button>
       </div>
     </div>
 </template>
 
 <script>
-import MyButton from './UI/MyButton.vue'
     export default {
-  components: { MyButton },
         props:{
             post: {
                 type: Object,
