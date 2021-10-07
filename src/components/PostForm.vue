@@ -3,11 +3,11 @@
       @submit.prevent 
       class="form"
     >
-      <input
+      <my-input
         name="title" 
         v-model="title"
        />
-      <input
+      <my-input
         name="text" 
         v-model="text"
        />
