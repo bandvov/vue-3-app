@@ -15,7 +15,7 @@
         class="add-btn" 
         @click="createPost" type="submit"
       >
-        Add button
+        Add Post
       </my-button>
     </form>
 </template>

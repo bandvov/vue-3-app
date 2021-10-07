@@ -8,7 +8,7 @@
       <div class="btns">
         <my-button 
           style="border: 1px solid red" 
-          @click="deleteHandler">Delete
+          @click="$emit('remove')">Delete
         </my-button>
       </div>
     </div>
@@ -23,14 +23,6 @@
                 default: {},
             }
         },
-        data:() =>({
-            post: {}
-        }),
-        methods: {
-          deleteHandler() {
-            console.log('delete handler');
-          }
-        }
     }
 </script>
 

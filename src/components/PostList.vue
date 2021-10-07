@@ -1,11 +1,11 @@
-<template>    
+<template>
         <h2>List of posts</h2>
-        <post-item        
+        <post-item
             v-for="post in posts"
             :key="post"
             :post="post"
+            @remove="$emit('remove', post.id)"
         />
-
 </template>
 
 <script>
@@ -19,7 +19,7 @@
           required: true,
           default: []
       }
-  }
+  },
 }
 </script>
 
