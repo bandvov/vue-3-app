@@ -15,7 +15,7 @@
     <h2 style="color: red;" v-else>No posts</h2>
   </div>
   <router-view />
-  <my-dialog :show="show" @click:stopPropagation="showModal">
+  <my-dialog v-model:show="show" :showModal="showModal">
     <post-form 
       :addPost="addPost"
       :showModal="showModal"
