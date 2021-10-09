@@ -6,10 +6,11 @@
         @click="showModal(true)">
         Create Post
       </my-button>
+      <my-select v-model="selectedSort" :options="selectOptions"></my-select>
     </div>
     <post-list
       v-if="!isPostLoading"
-      :posts="posts"
+      :posts="sortedPosts"
       @remove="deleteHandler" 
     />
     <div v-else>Loading...</div>
@@ -44,6 +45,11 @@ export default {
   ],
   isPostLoading: true,
   error: false,
+  selectedSort:"",
+  selectOptions: [
+    {value: "title",name: "Title"},
+    {value: "body",name: "Body"},
+  ]
   }),
   created(){
     this.fetchPosts();
@@ -76,6 +82,13 @@ export default {
     },700)
     }
    },
+computed: {
+  sortedPosts() {
+    return [...this.posts].sort((post1, post2)=>{
+        return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]);
+    })
+  }
+}
 }
 </script>
 <style>
@@ -90,7 +103,7 @@ export default {
   }
   .create-btn {
  display: flex;
- justify-content: flex-end;
+ justify-content: space-between;
   }
  
 </style>
