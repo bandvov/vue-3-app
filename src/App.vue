@@ -8,11 +8,12 @@
       </my-button>
     </div>
     <post-list
-      v-if="posts.length > 0"
+      v-if="!isPostLoading"
       :posts="posts"
       @remove="deleteHandler" 
     />
-    <h2 style="color: red;" v-else>No posts</h2>
+    <div v-else>Loading...</div>
+    <h2 style="color: red;" v-if="!isPostLoading && posts.length ===0">No posts</h2>
   </div>
   <router-view />
   <my-dialog v-model:show="show" :showModal="showModal">
@@ -29,6 +30,7 @@
 import PostList from './components/PostList.vue';
 import PostForm from './components/PostForm.vue';
 import MyButton from './components/UI/MyButton.vue';
+import axios from 'axios';
 
 export default {
   components:{
@@ -39,28 +41,13 @@ export default {
   data:() =>({
     show: false,
   posts: [
-    {
-      id:1,
-      title:"Lorem ipsum dolor sit amet consectetur.",
-      text: "Lorem ipsum dolor sit amet consecte turLorem ipsum dolor sit amet consectetur" 
-    },
-    {
-      id:2,
-      title:"dicta repellendus consequatur itaque blanditiis.",
-      text:"Lorem ipsum dolor sit amet consectet urLorem ipsum dolor sit amet conse cteturLorem ipsum dolor sit amet consectetur" 
-      },
-    {
-      id:3,
-      title:"accusamus beatae optio similique eum dolores.",
-      text: "Lorem ipsum dolor sit amet cons ecte turLo rem ipsum dolor sit amet consectetur" 
-    },
-    {
-      id:4,
-      title:"qui nihil debitis itaque!.",
-      text:"dolor sit amet consectetur dolor sit amet consectetur dolor sit amet consectetur" 
-    },
-  ]
+  ],
+  isPostLoading: true,
+  error: false,
   }),
+  created(){
+    this.fetchPosts();
+  },
   methods:{
     addPost(post){
       this.showModal(false);
@@ -71,6 +58,22 @@ export default {
     },
     showModal(status) {
       this.show = status;
+    },
+    setIsPostLoading(status){
+      this.isPostLoading = status;
+    },
+    fetchPosts(){
+   this.setIsPostLoading(true);
+   setTimeout(async () => {
+
+     await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10')
+  .then(json => this.posts = json.data).catch((err) =>{
+    alert('error');
+    this.error = true;
+  }).finally(()=>{
+    this.setIsPostLoading(false);
+  });
+    },700)
     }
    },
 }

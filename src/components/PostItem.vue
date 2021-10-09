@@ -3,7 +3,7 @@
       <div>
         <div>Post: {{post.id}}</div>
         <div><strong>title: </strong>{{post.title}}</div>
-        <div><strong>Text: </strong>{{post.text}}.</div>
+        <div><strong>body: </strong>{{post.body}}.</div>
       </div>
       <div class="btns">
         <my-button 
