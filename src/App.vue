@@ -1,5 +1,7 @@
 <template>
   <div class="app">
+    <my-input v-model="searchQuery"
+    placeholder="Search..." />
     <div class="create-btn">
       <my-button 
         class="add-btn"
@@ -10,7 +12,7 @@
     </div>
     <post-list
       v-if="!isPostLoading"
-      :posts="sortedPosts"
+      :posts="sortedSearchPosts"
       @remove="deleteHandler" 
     />
     <div v-else>Loading...</div>
@@ -49,7 +51,8 @@ export default {
   selectOptions: [
     {value: "title",name: "Title"},
     {value: "body",name: "Body"},
-  ]
+  ],
+  searchQuery: "",
   }),
   created(){
     this.fetchPosts();
@@ -82,13 +85,19 @@ export default {
     },700)
     }
    },
-computed: {
-  sortedPosts() {
-    return [...this.posts].sort((post1, post2)=>{
-        return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]);
-    })
+  computed: {
+    sortedPosts() {
+      return [...this.posts].sort((post1, post2)=>{
+          return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]);
+      })
+    },
+    sortedSearchPosts() {
+      if (this.searchQuery) {
+        return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      }
+      return this.sortedPosts;
+    }
   }
-}
 }
 </script>
 <style>

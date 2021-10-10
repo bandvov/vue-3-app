@@ -6,10 +6,12 @@
       <my-input
         name="title" 
         v-model="title"
+        placeholder="Enter title..."
        />
       <my-input
         name="text" 
         v-model="text"
+        placeholder="Enter body..."
        />
       <my-button
         class="add-btn" 
