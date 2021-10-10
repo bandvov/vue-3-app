@@ -16,6 +16,7 @@
       @remove="deleteHandler" 
     />
     <div v-else>Loading...</div>
+    <my-pagination :totalPages="totalPages" :changePage="changePage" :currentPage="page" />
     <h2 style="color: red;" v-if="!isPostLoading && posts.length ===0">No posts</h2>
   </div>
   <router-view />
@@ -53,6 +54,9 @@ export default {
     {value: "body",name: "Body"},
   ],
   searchQuery: "",
+  page:1,
+  limit: 10,
+  totalPages:0,
   }),
   created(){
     this.fetchPosts();
@@ -71,17 +75,25 @@ export default {
     setIsPostLoading(status){
       this.isPostLoading = status;
     },
+    changePage(currentPage) {
+      this.page = currentPage;
+      this.fetchPosts();
+    },
     fetchPosts(){
    this.setIsPostLoading(true);
    setTimeout(async () => {
 
-     await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10')
-  .then(json => this.posts = json.data).catch((err) =>{
+   const response = await axios.get('https://jsonplaceholder.typicode.com/posts',{params:{
+       _limit: this.limit,
+       _page: this.page,
+     }}).catch((err) =>{
     alert('error');
     this.error = true;
   }).finally(()=>{
     this.setIsPostLoading(false);
   });
+    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
+    this.posts = response.data;
     },700)
     }
    },
