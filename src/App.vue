@@ -1,60 +1,113 @@
 <template>
   <div class="app">
-    <form @submit.prevent class="form">
-      <input class="input" type="text" name="title" v-model="title" />
-      <input class="input" type="text" name="text" v-model="text" />
-      <button class="btn" type="submit" @click="createPost">Add Post</button>
-    </form>
-    <div 
-      class="post"
-      v-for="post in posts"
-      :key="post"
-    >
-      <div>Post: {{post.id}}</div>
-      <div><strong>title: </strong>{{post.title}}</div>
-      <div><strong>Text: </strong>{{post.text}}.</div>
+    <my-input v-model="searchQuery"
+    placeholder="Search..." />
+    <div class="create-btn">
+      <my-button 
+        class="add-btn"
+        @click="showModal(true)">
+        Create Post
+      </my-button>
+      <my-select v-model="selectedSort" :options="selectOptions"></my-select>
     </div>
+    <post-list
+      v-if="!isPostLoading"
+      :posts="sortedSearchPosts"
+      @remove="deleteHandler" 
+    />
+    <div v-else>Loading...</div>
+    <my-pagination :totalPages="totalPages" :changePage="changePage" :currentPage="page" />
+    <h2 style="color: red;" v-if="!isPostLoading && posts.length ===0">No posts</h2>
   </div>
-  <router-view/>
+  <router-view />
+  <my-dialog v-model:show="show" :showModal="showModal">
+    <post-form 
+      :addPost="addPost"
+      :showModal="showModal"
+      :id="this.posts.length" 
+    />
+  </my-dialog>
 </template>
+
 <script>
+
+import PostList from './components/PostList.vue';
+import PostForm from './components/PostForm.vue';
+import MyButton from './components/UI/MyButton.vue';
+import axios from 'axios';
+
 export default {
+  components:{
+    PostList,
+    PostForm,
+    MyButton,
+  },
   data:() =>({
-    title:"",
-    text:"",
+    show: false,
   posts: [
-    {
-      id:1,
-      title:"Lorem ipsum dolor sit amet consectetur.",
-      text: "Lorem ipsum dolor sit amet consecte turLorem ipsum dolor sit amet consectetur" 
-    },
-    {
-      id:2,
-      title:"dicta repellendus consequatur itaque blanditiis.",
-      text:"Lorem ipsum dolor sit amet consectet urLorem ipsum dolor sit amet conse cteturLorem ipsum dolor sit amet consectetur" 
-      },
-    {
-      id:3,
-      title:"accusamus beatae optio similique eum dolores.",
-      text: "Lorem ipsum dolor sit amet cons ecte turLo rem ipsum dolor sit amet consectetur" 
-    },
-    {
-      id:4,
-      title:"qui nihil debitis itaque!.",
-      text:"dolor sit amet consectetur dolor sit amet consectetur dolor sit amet consectetur" 
-    },
-  ] 
-  }), 
+  ],
+  isPostLoading: true,
+  error: false,
+  selectedSort:"",
+  selectOptions: [
+    {value: "title",name: "Title"},
+    {value: "body",name: "Body"},
+  ],
+  searchQuery: "",
+  page:1,
+  limit: 10,
+  totalPages:0,
+  }),
+  created(){
+    this.fetchPosts();
+  },
   methods:{
-    createPost(){
-      const post = {
-        id: this.posts.length + 1, 
-        title: this.title, 
-        text: this.text
-      }
+    addPost(post){
+      this.showModal(false);
       this.posts.push(post);
-      this.title = "";
-      this.text = "";
+    },
+    deleteHandler(id) {
+      this.posts = this.posts.filter(post => post.id !==id);
+    },
+    showModal(status) {
+      this.show = status;
+    },
+    setIsPostLoading(status){
+      this.isPostLoading = status;
+    },
+    changePage(currentPage) {
+      this.page = currentPage;
+      this.fetchPosts();
+    },
+    fetchPosts(){
+   this.setIsPostLoading(true);
+   setTimeout(async () => {
+
+   const response = await axios.get('https://jsonplaceholder.typicode.com/posts',{params:{
+       _limit: this.limit,
+       _page: this.page,
+     }}).catch((err) =>{
+    alert('error');
+    this.error = true;
+  }).finally(()=>{
+    this.setIsPostLoading(false);
+  });
+    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
+    this.posts = response.data;
+    },700)
+    }
+   },
+  computed: {
+    sortedPosts() {
+      return [...this.posts].sort((post1, post2)=>{
+          return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]);
+      })
+    },
+    sortedSearchPosts() {
+      if (this.searchQuery) {
+        return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      }
+      return this.sortedPosts;
     }
   }
 }
@@ -65,33 +118,13 @@ export default {
     margin: 0;
     box-sizing: content-box;
   }
-  .post {
-    border: 1px solid teal;
-    padding: 1rem;
-    margin-top: 1rem;
-  }
+
   .app {
     margin: 1rem;
   }
-  .form {
-    display: flex;
-    flex-direction: column;
+  .create-btn {
+ display: flex;
+ justify-content: space-between;
   }
-  .input {
-    padding: .5rem;
-    margin-bottom: 1rem;
-  }
-  .btn {
-    align-self: flex-end;
-    background-color: transparent;
-    border: 1px solid teal;
-    padding: 0.5rem;
-    border-radius: .2rem;
-  }
-  .btn:hover {
-    background-color: teal;
-    color: white;
-    transition: .1s ease-in-out;
-    cursor: pointer;
-  }
+ 
 </style>
