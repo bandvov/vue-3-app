@@ -16,7 +16,7 @@
       @remove="deleteHandler" 
     />
     <div v-else>Loading...</div>
-    <my-pagination :totalPages="totalPages" :changePage="changePage" :currentPage="page" />
+    <div ref="observer" class="observer"></div>
     <h2 style="color: red;" v-if="!isPostLoading && posts.length ===0">No posts</h2>
   </div>
   <router-view />
@@ -58,8 +58,22 @@ export default {
   limit: 10,
   totalPages:0,
   }),
-  created(){
+  mounted(){
     this.fetchPosts();
+    const options = {
+    rootMargin: '0px',
+    threshold: 1.0
+}
+const callback = (entries, observer) => {
+    /* Content excerpted, show below */
+if (entries[0].isIntersecting && this.page !==0 && this.page < this.totalPages) {
+ 
+this.loadPosts()
+}
+};
+
+const observer = new IntersectionObserver(callback, options);
+observer.observe(this.$refs.observer);
   },
   methods:{
     addPost(post){
@@ -75,10 +89,7 @@ export default {
     setIsPostLoading(status){
       this.isPostLoading = status;
     },
-    changePage(currentPage) {
-      this.page = currentPage;
-      this.fetchPosts();
-    },
+
     fetchPosts(){
    this.setIsPostLoading(true);
    setTimeout(async () => {
@@ -96,7 +107,24 @@ export default {
     this.posts = response.data;
     },700)
     }
-   },
+   ,
+   
+    loadPosts(){
+      this.page++;
+   setTimeout(async () => {
+
+   const response = await axios.get('https://jsonplaceholder.typicode.com/posts',{params:{
+       _limit: this.limit,
+       _page: this.page,
+     }}).catch((err) =>{
+    alert('error');
+    this.error = true;
+  })
+    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
+    this.posts = [...this.posts, ...response.data];
+    },700)
+    }
+  },   
   computed: {
     sortedPosts() {
       return [...this.posts].sort((post1, post2)=>{
@@ -126,5 +154,8 @@ export default {
  display: flex;
  justify-content: space-between;
   }
- 
+ .observer {
+   background-color: green;
+   height: 2rem;
+ }
 </style>
