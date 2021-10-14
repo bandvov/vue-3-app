@@ -16,7 +16,7 @@
       @remove="deleteHandler" 
     />
     <div v-else>Loading...</div>
-    <div ref="observer" class="observer"></div>
+    <div v-intersection="loadPosts" class="observer"></div>
     <h2 style="color: red;" v-if="!isPostLoading && posts.length ===0">No posts</h2>
   </div>
   <router-view />
@@ -60,20 +60,6 @@ export default {
   }),
   mounted(){
     this.fetchPosts();
-    const options = {
-    rootMargin: '0px',
-    threshold: 1.0
-}
-const callback = (entries, observer) => {
-    /* Content excerpted, show below */
-if (entries[0].isIntersecting && this.page !==0 && this.page < this.totalPages) {
- 
-this.loadPosts()
-}
-};
-
-const observer = new IntersectionObserver(callback, options);
-observer.observe(this.$refs.observer);
   },
   methods:{
     addPost(post){
@@ -107,8 +93,7 @@ observer.observe(this.$refs.observer);
     this.posts = response.data;
     },700)
     }
-   ,
-   
+   ,   
     loadPosts(){
       this.page++;
    setTimeout(async () => {

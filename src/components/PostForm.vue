@@ -4,6 +4,7 @@
       class="form"
     >
       <my-input
+        v-focus
         name="title" 
         v-model="title"
         placeholder="Enter title..."
