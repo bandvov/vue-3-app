@@ -14,7 +14,7 @@
         placeholder="Enter body..."
        />
       <my-button
-        class="add-btn" 
+     
         @click="createPost" type="submit"
       >
         Add Post

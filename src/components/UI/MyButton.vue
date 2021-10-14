@@ -20,13 +20,13 @@
     border-radius: .2rem;
   }
   .btn:hover {
-    background-color: rgb(255, 18, 18);
+    background-color: teal;
     color: white;
     transition: .1s ease-in-out;
     cursor: pointer;
   }
-  .add-btn:hover {
-    background-color: teal
+  .delete-btn:hover {
+    background-color: rgb(255, 18, 18);
   }
   
 </style>
