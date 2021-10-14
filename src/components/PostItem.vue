@@ -6,7 +6,12 @@
         <div><strong>body: </strong>{{post.body}}.</div>
       </div>
       <div class="btns">
-        <my-button 
+        <my-button
+        style="margin-right:1rem"           
+          @click="$router.push(`/posts/${post.id}`)">Details
+        </my-button>
+        <my-button
+          class="delete-btn" 
           style="border: 1px solid red" 
           @click="$emit('remove')">Delete
         </my-button>
@@ -33,6 +38,10 @@
     margin-top: 1rem;
     display: flex;
     justify-content: space-between;
+  }
+  .btns {
+    display: flex;
+    align-items: center;
   }
  
 

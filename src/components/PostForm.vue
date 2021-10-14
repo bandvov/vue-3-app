@@ -4,6 +4,7 @@
       class="form"
     >
       <my-input
+        v-focus
         name="title" 
         v-model="title"
         placeholder="Enter title..."
@@ -14,7 +15,7 @@
         placeholder="Enter body..."
        />
       <my-button
-        class="add-btn" 
+     
         @click="createPost" type="submit"
       >
         Add Post
