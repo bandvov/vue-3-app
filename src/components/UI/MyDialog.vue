@@ -13,24 +13,11 @@
 </template>
 
 <script>
+import toggleMixin from "../../mixins/toggleMixin";
+
     export default {
         name: "my-dialog",
-        props:{
-            show:{
-                default: false,
-                required: true,
-                type: Boolean,
-            },
-            showModal:{
-                type: Function,
-                default: () => {}
-            }
-        },
-        methods:{
-            hideDialog(){
-                this.$emit("update:show",false)
-            }
-        }
+mixins: [toggleMixin]
     }
 </script>
 
