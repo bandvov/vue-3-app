@@ -1,5 +1,5 @@
 <template>
-    <div class="dialog" v-if="show" @click="hideDialog">
+    <div class="dialog" v-if="show" @click="showModal(false)">
         <div
             @click.stop 
             class="dialog-content"
@@ -13,24 +13,11 @@
 </template>
 
 <script>
+import toggleMixin from "../../mixins/toggleMixin";
+
     export default {
         name: "my-dialog",
-        props:{
-            show:{
-                default: false,
-                required: true,
-                type: Boolean,
-            },
-            showModal:{
-                type: Function,
-                default: () => {}
-            }
-        },
-        methods:{
-            hideDialog(){
-                this.$emit("update:show",false)
-            }
-        }
+mixins: [toggleMixin]
     }
 </script>
 
@@ -67,5 +54,8 @@
     background-color: black;
     color: white;
     font-size: 2rem;
+}
+.close-btn:hover {
+    background-color: red;
 }
 </style>

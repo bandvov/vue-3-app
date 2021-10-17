@@ -1,14 +1,21 @@
 <template>
   <div>
-    <my-input v-model="searchQuery"
-    placeholder="Search..." />
+    <my-input 
+      v-model:value="searchQuery"
+      @update:model-value="setSearchQuery"
+      placeholder="Search..." 
+    />
     <div class="create-btn">
       <my-button 
         class="add-btn"
-        @click="showModal(true)">
+        @click="setShowModal(true)">
         Create Post
       </my-button>
-      <my-select v-model="selectedSort" :options="selectOptions"></my-select>
+      <my-select 
+        v-model:value="selectedSort"
+        @update:model-value="setSelectedSort"
+        :options="selectOptions"
+      ></my-select>
     </div>
     <post-list
       v-if="!isPostLoading"
@@ -20,11 +27,14 @@
     <h2 style="color: red;" v-if="!isPostLoading && posts.length ===0">No posts</h2>
   </div>
   <router-view />
-  <my-dialog v-model:show="show" :showModal="showModal">
+  <my-dialog 
+    :show="showModal" 
+    :showModal="setShowModal"
+  >
     <post-form 
       :addPost="addPost"
-      :showModal="showModal"
-      :id="this.posts.length" 
+      :showModal="setShowModal"
+      :id="posts.length" 
     />
   </my-dialog>
 </template>
@@ -34,7 +44,12 @@
 import PostList from '../components/PostList.vue';
 import PostForm from '../components/PostForm.vue';
 import MyButton from '../components/UI/MyButton.vue';
-import axios from 'axios';
+import {
+  mapState,
+  mapMutations,
+  mapGetters,
+  mapActions
+} from 'vuex';
 
 export default {
   components:{
@@ -42,87 +57,46 @@ export default {
     PostForm,
     MyButton,
   },
-  data:() =>({
-    show: false,
-  posts: [
-  ],
-  isPostLoading: true,
-  error: false,
-  selectedSort:"",
-  selectOptions: [
-    {value: "title",name: "Title"},
-    {value: "body",name: "Body"},
-  ],
-  searchQuery: "",
-  page:1,
-  limit: 10,
-  totalPages:0,
-  }),
   mounted(){
     this.fetchPosts();
   },
+  computed:{
+    ...mapState({
+      showModal: (state) => state.post.showModal,
+      isPostLoading: (state) => state.post.isPostLoading,
+      selectedSort: (state) => state.post.selectedSort,
+      searchQuery: (state) => state.post.searchQuery,
+      selectOptions: (state) => state.post.selectOptions,
+      totalPages: (state) => state.post.totalPages,
+      posts: (state) => state.post.posts,
+      error: (state) => state.post.error,
+    }),
+    ...mapGetters({
+       sortedPosts: "post/sortedPosts",
+       sortedSearchPosts:"post/sortedSearchPosts",
+    }),
+  
+  },
   methods:{
     addPost(post){
-      this.showModal(false);
-      this.posts.push(post);
+      console.log(post);
+      this.setShowModal(false);
+      this.setPosts([...this.posts,post])
     },
     deleteHandler(id) {
-      this.posts = this.posts.filter(post => post.id !==id);
-    },
-    showModal(status) {
-      this.show = status;
-    },
-    setIsPostLoading(status){
-      this.isPostLoading = status;
-    },
-
-    fetchPosts(){
-   this.setIsPostLoading(true);
-   setTimeout(async () => {
-
-   const response = await axios.get('https://jsonplaceholder.typicode.com/posts',{params:{
-       _limit: this.limit,
-       _page: this.page,
-     }}).catch((err) =>{
-    alert('error');
-    this.error = true;
-  }).finally(()=>{
-    this.setIsPostLoading(false);
-  });
-    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
-    this.posts = response.data;
-    },700)
-    }
-   ,   
-    loadPosts(){
-      this.page++;
-   setTimeout(async () => {
-
-   const response = await axios.get('https://jsonplaceholder.typicode.com/posts',{params:{
-       _limit: this.limit,
-       _page: this.page,
-     }}).catch((err) =>{
-    alert('error');
-    this.error = true;
-  })
-    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
-    this.posts = [...this.posts, ...response.data];
-    },700)
-    }
-  },   
-  computed: {
-    sortedPosts() {
-      return [...this.posts].sort((post1, post2)=>{
-          return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]);
-      })
-    },
-    sortedSearchPosts() {
-      if (this.searchQuery) {
-        return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      }
-      return this.sortedPosts;
-    }
-  }
+      this.setPosts(this.posts.filter(post => post.id !==id));
+    },   
+    ...mapActions({
+      fetchPosts:"post/fetchPosts",
+      loadPosts: "post/loadPosts",
+    }),
+    ...mapMutations({
+       setShowModal:"post/setShowModal",
+       setPosts: "post/setPosts",
+       setSelectedSort: "post/setSelectedSort",
+       setSearchQuery: "post/setSearchQuery",
+    }),
+  } 
 }
 </script>
 <style>
