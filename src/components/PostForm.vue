@@ -3,6 +3,7 @@
       @submit.prevent 
       class="form"
     >
+      <h3>Create post</h3>
       <my-input
         v-focus
         name="title" 
@@ -15,7 +16,6 @@
         placeholder="Enter body..."
        />
       <my-button
-     
         @click="createPost" type="submit"
       >
         Add Post
@@ -44,7 +44,7 @@
         methods:{
             createPost(){
                    const post = {
-        id: this.id +1, 
+        id: this.id + 1, 
         title: this.title, 
         text: this.text
       }

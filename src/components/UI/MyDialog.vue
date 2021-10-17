@@ -55,4 +55,7 @@ mixins: [toggleMixin]
     color: white;
     font-size: 2rem;
 }
+.close-btn:hover {
+    background-color: red;
+}
 </style>
